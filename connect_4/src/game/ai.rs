@@ -6,10 +6,8 @@ use connect_4_model::{Model, Move};
 use iyes_loopless::prelude::IntoConditionalSystem;
 
 use super::{input::Bot, logic::MoveHistory};
-use crate::{
-    game::event::MoveW,
-    utils::{util_action::Proposal, util_input::handle_input, util_state::StateContraint},
-};
+use crate::game::event::MoveW;
+use k_utils::{util_action::Proposal, util_input::handle_input, util_state::StateContraint};
 
 fn select_move(board: &mut Model, search: &mut Option<AlphaBetaSearch<Move>>) -> Option<Move> {
     let depth = 6;

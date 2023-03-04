@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::utils::{util_plugin::UtilPlugin, util_state::StateContraint};
+use k_utils::{util_plugin::UtilPlugin, util_state::StateContraint};
 
 use super::{ai::AI, graphics::Graphics, input::Input, logic::Logic, ui::UI};
 

@@ -3,7 +3,7 @@ use std::marker::PhantomData;
 use bevy::prelude::*;
 use iyes_loopless::prelude::*;
 
-use crate::utils::{
+use k_utils::{
     util_graphics::update_graphics,
     util_state::{StateContraint, UtilState},
 };

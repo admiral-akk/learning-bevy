@@ -1,15 +1,12 @@
 use std::marker::PhantomData;
 
+use crate::game::plugin::Game;
 use bevy::prelude::*;
 use iyes_loopless::prelude::IntoConditionalSystem;
-
-use crate::{
-    game::plugin::Game,
-    utils::{
-        util_action::{handle_actions, Proposal, Selection},
-        util_plugin::UtilPlugin,
-        util_state::StateContraint,
-    },
+use k_utils::{
+    util_action::{handle_actions, Proposal, Selection},
+    util_plugin::UtilPlugin,
+    util_state::StateContraint,
 };
 
 use super::{

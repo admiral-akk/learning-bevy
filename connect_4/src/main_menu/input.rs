@@ -3,11 +3,7 @@ use std::marker::PhantomData;
 use bevy::prelude::*;
 use iyes_loopless::prelude::*;
 
-use crate::utils::{
-    util_action::{Proposal},
-    util_input::handle_input,
-    util_state::StateContraint,
-};
+use k_utils::{util_action::Proposal, util_input::handle_input, util_state::StateContraint};
 
 use super::{event::StartGame, plugin::MainMenu};
 fn propose_moves(

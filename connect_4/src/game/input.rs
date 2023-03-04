@@ -5,7 +5,7 @@ use bevy::prelude::*;
 use connect_4_model::{types::Player, Model, Move};
 use iyes_loopless::prelude::IntoConditionalSystem;
 
-use crate::utils::{
+use k_utils::{
     raycast::components::{GameInteraction, Interaction::*},
     util_action::Proposal,
     util_input::handle_input,

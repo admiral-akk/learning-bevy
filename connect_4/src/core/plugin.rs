@@ -1,12 +1,11 @@
 use bevy::prelude::*;
 use iyes_loopless::prelude::*;
 
-use crate::{
-    main_menu::plugin::MainMenu,
-    utils::{
-        util_plugin::UtilPlugin,
-        util_state::{StateContraint, UtilState},
-    },
+use crate::main_menu::plugin::MainMenu;
+
+use k_utils::{
+    util_plugin::UtilPlugin,
+    util_state::{StateContraint, UtilState},
 };
 
 #[derive(Debug, Default, Component, Clone, Copy, PartialEq, Eq, Hash)]

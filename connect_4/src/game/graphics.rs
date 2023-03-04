@@ -12,7 +12,8 @@ use super::{
     input::Column,
     logic::{MoveHistory, OwnerW, PositionW},
 };
-use crate::utils::{
+use k_utils::{
+    raycast::components::GameInteraction,
     util_action::Selection,
     util_graphics::update_graphics,
     util_stages::UPDATE_DELETED,
@@ -23,8 +24,6 @@ use bevy::{
     prelude::{Added, Color, Commands, Entity, Query, Transform, Vec2, Vec3},
     sprite::{Sprite, SpriteBundle},
 };
-
-use crate::utils::raycast::components::GameInteraction;
 
 use super::event::MoveResultW;
 

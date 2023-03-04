@@ -1,13 +1,12 @@
 use crate::core::plugin::Core;
 use bevy::prelude::*;
 use game::plugin::Game;
+use k_utils::util_plugin::{add_stages, UtilPluginStruct};
 use main_menu::plugin::MainMenu;
-use utils::util_plugin::{add_stages, UtilPluginStruct};
 
 pub mod core;
 pub mod game;
 pub mod main_menu;
-pub mod utils;
 
 fn main() {
     let mut app = App::new();

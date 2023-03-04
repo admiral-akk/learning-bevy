@@ -1,16 +1,16 @@
 use std::marker::PhantomData;
 
-use crate::utils::{
-    util_action::handle_actions,
-    util_resource::add_util_resource,
-    util_state::{StateContraint, UtilState},
-};
 use bevy::prelude::*;
 use connect_4_model::{
     types::{Owner, Position},
     Move,
 };
 use iyes_loopless::prelude::{AppLooplessStateExt, IntoConditionalSystem};
+use k_utils::{
+    util_action::handle_actions,
+    util_resource::add_util_resource,
+    util_state::{StateContraint, UtilState},
+};
 use std::{fmt::Debug, hash::Hash};
 
 use self::mut_deref::{apply_exit, apply_moves, setup_board, simulate_exit, simulate_moves};
@@ -49,6 +49,11 @@ mod mut_deref {
         commands.spawn(Bot(Player::Blue, None));
     }
 
+    use k_utils::{
+        util_action::{Proposal, Selection},
+        util_plugin::UtilPlugin,
+    };
+
     use crate::{
         game::{
             event::{ExitGame, ExitingGame, MoveResultW, MoveW},
@@ -56,10 +61,6 @@ mod mut_deref {
             plugin::Game,
         },
         main_menu::plugin::MainMenu,
-        utils::{
-            util_action::{Proposal, Selection},
-            util_plugin::UtilPlugin,
-        },
     };
     use bevy::prelude::*;
     use connect_4_model::{
