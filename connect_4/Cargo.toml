@@ -1,0 +1,15 @@
+[package]
+name = "connect_4"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+bevy = "0.9"
+iyes_loopless = "0.9.1"
+extend = "1.1.2"
+rand = "0.8.5"
+derive_more = "0.99.17"
+alpha_beta = { path = "../alpha_beta" }
+connect_4_model = { path = "../connect_4_model" }

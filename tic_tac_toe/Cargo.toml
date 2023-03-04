@@ -1,0 +1,11 @@
+[package]
+name = "tic_tac_toe"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+bevy_utils = { path = "../bevy_utils" }
+bevy = "0.9"
+iyes_loopless = "0.9.1"

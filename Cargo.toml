@@ -1,0 +1,10 @@
+[workspace]
+resolver = "2"
+
+members = [
+    "tic_tac_toe",
+    "bevy_utils",
+    "alpha_beta",
+    "connect_4",
+    "connect_4_model"
+]
