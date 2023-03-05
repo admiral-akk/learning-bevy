@@ -12,5 +12,5 @@ extend = "1.1.2"
 rand = "0.8.5"
 derive_more = "0.99.17"
 alpha_beta = { path = "../alpha_beta" }
-connect_4_model = { path = "../connect_4_model" }
+connect_4_model = { path = "connect_4_model" }
 k_utils = { path = "../k_utils" }
