@@ -22,7 +22,6 @@ const MARK_OWNED: &str = "mark_owned";
 const UPDATE_STATE: &str = "update_state";
 // Remove entites
 const CLEAN_UP: &str = "cleanup";
-
 const STAGE_ORDER: &[&str] = &[
     PRE_INPUT,
     PROPOSE_MOVES,

@@ -6,4 +6,5 @@ members = [
     "bevy_utils",
     "alpha_beta",
     "connect_4",
+    "checkers",
 ]
