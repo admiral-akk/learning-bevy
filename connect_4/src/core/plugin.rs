@@ -32,7 +32,10 @@ impl Core {
     }
 }
 
-impl UtilPlugin<Core> for Core {}
+#[derive(Clone, Copy)]
+struct Dummy;
+
+impl UtilPlugin<Core, Dummy> for Core {}
 impl StateContraint for Core {}
 
 fn setup_camera(mut commands: Commands, mut windows: ResMut<Windows>) {

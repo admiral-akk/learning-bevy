@@ -1,7 +1,7 @@
-use bevy::{
-    prelude::{App, Changed, Component, Plugin, Res, With, Without},
-    utils::HashSet,
-};
+use std::ops::Deref;
+
+use alpha_beta::GameModel;
+use bevy::prelude::{App, Changed, Component, Plugin, Res, With};
 use connect_4_model::{
     types::{Owner, Player},
     Model, Move,
@@ -9,12 +9,11 @@ use connect_4_model::{
 use iyes_loopless::prelude::{ConditionSet, IntoConditionalSystem};
 
 use super::{
-    input::Column,
+    input::{Column, Human},
     logic::{MoveHistory, OwnerW, PositionW},
 };
 use k_utils::{
     raycast::components::GameInteraction,
-    util_action::Selection,
     util_graphics::update_graphics,
     util_stages::UPDATE_DELETED,
     util_state::{StateContraint, UtilState},
@@ -24,8 +23,6 @@ use bevy::{
     prelude::{Added, Color, Commands, Entity, Query, Transform, Vec2, Vec3},
     sprite::{Sprite, SpriteBundle},
 };
-
-use super::event::MoveResultW;
 
 const SQUARE_SIZE: f32 = 80.;
 const SPACING: f32 = SQUARE_SIZE + 10.;
@@ -88,39 +85,46 @@ fn on_add_column(
 #[derive(Component)]
 struct Highlighted;
 
-fn clean_previous_proposed(
-    mut commands: Commands,
-    mut board: Query<(Entity, &mut Sprite, &PositionW, &OwnerW), With<Highlighted>>,
-    proposed_action: Query<&MoveResultW, Without<Selection>>,
-) {
-    if proposed_action.is_empty() {
-        return;
-    }
-    let target_positions = proposed_action
-        .iter()
-        .filter_map(|result| result.0)
-        .map(|v| v.0)
-        .collect::<HashSet<_>>();
-    for (entity, mut sprite, pos, owner) in board.iter_mut() {
-        if !target_positions.contains(pos) {
-            sprite.color = owner.to_color();
-            commands.entity(entity).remove::<Highlighted>();
-        }
-    }
-}
+use k_utils::raycast::components::Interaction::*;
 
 fn update_proposed_color(
     mut commands: Commands,
-    mut board: Query<(Entity, &mut Sprite, &PositionW)>,
-    proposed_action: Query<&MoveResultW, Without<Selection>>,
+    mut board_query: Query<(Entity, &mut Sprite, &PositionW, &OwnerW)>,
+    current_highlighted: Query<Entity, With<Highlighted>>,
+    interactions: Query<(&Column, &GameInteraction), Changed<GameInteraction>>,
+    move_history: Res<MoveHistory>,
+    humans: Query<&Human>,
 ) {
-    for &result in proposed_action.iter() {
-        if let Some(Move(position, player)) = result.0 {
-            for (entity, mut sprite, pos) in board.iter_mut() {
-                if position.eq(pos) {
-                    sprite.color = player.to_color();
-                    commands.entity(entity).insert(Highlighted);
+    if interactions.is_empty() {
+        return;
+    }
+    if let Some(entity) = current_highlighted.iter().next() {
+        if let Ok(mut square) = board_query.get_mut(entity) {
+            square.1.color = square.3.to_color();
+        }
+        commands.entity(entity).remove::<Highlighted>();
+    }
+    let board = Model::from(move_history.0.iter());
+    if humans.iter().all(|ap| board.active_player.ne(&ap.0)) {
+        return;
+    }
+    let moves = board.legal_moves();
+    for (&pos, &GameInteraction { interaction }) in interactions.iter() {
+        if let Some(m) = moves
+            .iter()
+            .filter(|Move(p, _)| p.x == pos.0 as usize)
+            .next()
+        {
+            match interaction {
+                Hover | JustClicked | Clicked => {
+                    for (entity, mut sprite, position, _) in board_query.iter_mut() {
+                        if position.deref().eq(&m.0) {
+                            sprite.color = m.1.to_color();
+                            commands.entity(entity).insert(Highlighted);
+                        }
+                    }
                 }
+                _ => {}
             }
         }
     }
@@ -176,7 +180,6 @@ impl<T: StateContraint + Sync + Send> Plugin for Graphics<T> {
             app,
             vec![
                 update_color.into_conditional(),
-                clean_previous_proposed.into_conditional(),
                 update_proposed_color.into_conditional(),
             ],
         );

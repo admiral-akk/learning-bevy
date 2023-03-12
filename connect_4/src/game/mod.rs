@@ -1,3 +1,4 @@
+mod actions;
 mod ai;
 mod event;
 mod graphics;

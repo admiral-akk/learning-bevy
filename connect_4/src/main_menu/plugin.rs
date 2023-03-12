@@ -2,7 +2,7 @@ use bevy::prelude::*;
 
 use k_utils::{util_plugin::UtilPlugin, util_state::StateContraint};
 
-use super::{input::Input, logic::*, ui::*};
+use super::{actions::Actions, logic::*, ui::*};
 
 #[derive(Component)]
 struct EnterGameButton;
@@ -15,9 +15,8 @@ impl Plugin for MainMenu {
         Self::add_defaults(app);
         app.add_plugin(Logic::<Self>::default());
         app.add_plugin(UI::<Self>::default());
-        app.add_plugin(Input::<Self>::default());
     }
 }
 
 impl StateContraint for MainMenu {}
-impl UtilPlugin<MainMenu> for MainMenu {}
+impl UtilPlugin<MainMenu, Actions> for MainMenu {}

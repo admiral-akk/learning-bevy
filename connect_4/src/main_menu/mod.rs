@@ -1,5 +1,4 @@
-mod event;
-mod input;
+mod actions;
 mod logic;
 pub mod plugin;
 mod ui;

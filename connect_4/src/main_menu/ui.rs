@@ -4,18 +4,35 @@ use bevy::prelude::*;
 use iyes_loopless::prelude::*;
 
 use k_utils::{
+    util_action::Proposal,
+    util_button::{add_button, UtilButtonConfig},
     util_graphics::update_graphics,
     util_state::{StateContraint, UtilState},
 };
 
-use super::plugin::MainMenu;
+use super::{actions::Actions, plugin::MainMenu};
 
 const NORMAL_BUTTON: Color = Color::rgb(0.15, 0.15, 0.15);
 const HOVERED_BUTTON: Color = Color::rgb(0.25, 0.25, 0.25);
 const PRESSED_BUTTON: Color = Color::rgb(0.35, 0.75, 0.35);
 
-fn spawn_ui(mut commands: Commands, asset_server: Res<AssetServer>) {
+pub fn spawn_ui(mut commands: Commands, asset_server: Res<AssetServer>) {
     let commands = &mut commands;
+    let button = add_button::<Actions>(
+        commands,
+        &asset_server,
+        UtilButtonConfig {
+            size: Size::new(Val::Px(300.0), Val::Px(65.0)),
+            text: "Enter Game".to_string(),
+        },
+        Box::new(|s| Proposal {
+            priority: match s {
+                k_utils::util_button::State::JustReleased(_) => -100,
+                _ => 100,
+            },
+            action: Actions::StartGame(*s),
+        }),
+    );
     let root = commands
         .spawn(NodeBundle {
             style: Style {
@@ -26,31 +43,8 @@ fn spawn_ui(mut commands: Commands, asset_server: Res<AssetServer>) {
             ..Default::default()
         })
         .id();
-    let button = commands
-        .spawn(ButtonBundle {
-            style: Style {
-                size: Size::new(Val::Px(300.0), Val::Px(65.0)),
-                justify_content: JustifyContent::Center,
-                align_items: AlignItems::Center,
-                ..default()
-            },
-            background_color: NORMAL_BUTTON.into(),
-            ..default()
-        })
-        .id();
-    let button_text = commands
-        .spawn(TextBundle::from_section(
-            "Enter Game",
-            TextStyle {
-                font: asset_server.load("fonts\\FiraSans-Bold.ttf"),
-                font_size: 40.0,
-                color: Color::rgb(0.9, 0.9, 0.9),
-            },
-        ))
-        .id();
 
     commands.entity(root).add_child(button);
-    commands.entity(button).add_child(button_text);
 }
 
 fn update_ui(

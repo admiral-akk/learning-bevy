@@ -1,0 +1,11 @@
+So I want to be able to declare a button, in-line. This is a problem because:
+
+- The button is a component (data)
+- The button's behaviour is a system (transformations)
+- The motivation for ECS is that you seperate out the data and transformations on the data
+
+Solution:
+
+- Make a beefy button object, with every parameter you could care about
+- Make a generic system to handle it
+

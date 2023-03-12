@@ -1,5 +1,8 @@
+use crate::util_action::{Act, Proposal};
+use crate::util_button::{emit_proposal, update_buttons};
+
 use super::raycast::plugin::RaycastPlugin;
-use super::util_action::{select_move, ActionPlugin};
+use super::util_action::select_move;
 use super::util_stages::*;
 use super::util_state::{StateContraint, UtilState};
 use super::util_systems::clean;
@@ -44,7 +47,6 @@ pub fn add_stages(app: &mut App) {
         }
     }
 }
-
 pub struct UtilPluginStruct;
 
 impl Plugin for UtilPluginStruct {
@@ -53,15 +55,39 @@ impl Plugin for UtilPluginStruct {
             pre_input_stage: PRE_INPUT,
             update_changed_stage: UPDATE_DELETED,
         })
-        .add_plugin(ActionPlugin {
-            clean_up_stage: CLEAN_UP,
-        });
+        .add_system_set_to_stage(
+            PRE_INPUT,
+            ConditionSet::new()
+                .label("UPDATE_BUTTONS")
+                .with_system(update_buttons)
+                .into(),
+        );
     }
 }
 
-pub trait UtilPlugin<StateType: StateContraint + Component> {
+pub trait UtilPlugin<
+    StateType: StateContraint + Component,
+    ActionType: Sync + Send + 'static + Clone,
+>
+{
     fn add_defaults(app: &mut App) {
         app.add_loopless_state_after_stage(UPDATE_STATE, UtilState::<StateType>::Uninitialized);
+        app.add_event::<Proposal<ActionType>>();
+        app.add_event::<Act<ActionType>>();
+        app.add_system_set_to_stage(
+            PRE_INPUT,
+            ConditionSet::new()
+                .after("UPDATE_BUTTONS")
+                .with_system(emit_proposal::<ActionType>)
+                .into(),
+        );
+        app.add_system_set_to_stage(
+            CLEAN_UP,
+            ConditionSet::new()
+                .run_in_state(UtilState::<StateType>::Uninitialized)
+                .with_system(clean::<StateType>)
+                .into(),
+        );
         app.add_system_set_to_stage(
             UPDATE_STATE,
             ConditionSet::new()
@@ -75,7 +101,7 @@ pub trait UtilPlugin<StateType: StateContraint + Component> {
             SELECT_MOVE,
             ConditionSet::new()
                 .run_in_state(UtilState::<StateType>::Running)
-                .with_system(select_move)
+                .with_system(select_move::<ActionType>)
                 .into(),
         );
         app.add_system_set_to_stage(
