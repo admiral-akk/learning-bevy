@@ -5,9 +5,12 @@ use connect_4_model::{
     types::{Owner, Position},
     Model, Move, MoveResult,
 };
-use iyes_loopless::prelude::{AppLooplessStateExt, IntoConditionalSystem};
+use iyes_loopless::{
+    condition::ConditionalSystemDescriptor,
+    prelude::{AppLooplessStateExt, IntoConditionalSystem},
+};
 use k_utils::{
-    util_action::{handle_actions, Act},
+    util_action::{handle_actions, Action},
     util_plugin::UtilPlugin,
     util_resource::add_util_resource,
     util_state::{StateContraint, UtilState},
@@ -28,7 +31,7 @@ pub struct PositionW(Position);
 #[derive(Component, Deref, PartialEq, Clone, Copy, Hash, Eq, Debug, Into)]
 pub struct OwnerW(Owner);
 
-mod mut_deref {
+pub mod mut_deref {
     use std::ops::DerefMut;
 
     use crate::game::input::{Bot, Column, Human};
@@ -59,14 +62,20 @@ mod mut_deref {
     }
 }
 
+impl Action for Actions {
+    fn apply_move() -> ConditionalSystemDescriptor {
+        apply_move.into_conditional()
+    }
+}
+
 fn apply_move(
     mut commands: Commands,
-    mut action_ewr: EventReader<Act<Actions>>,
+    mut action_ewr: EventReader<Actions>,
     mut board: Query<(&PositionW, &mut OwnerW)>,
     mut history: ResMut<MoveHistory>,
 ) {
     for action in action_ewr.iter() {
-        match action.action {
+        match action {
             Actions::EndGame(s) => match s {
                 k_utils::util_button::State::JustReleased(_) => {
                     Game::exit_to::<MainMenu>(&mut commands);

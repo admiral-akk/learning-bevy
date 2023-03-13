@@ -6,7 +6,7 @@ use connect_4_model::{Model, Move};
 use iyes_loopless::prelude::IntoConditionalSystem;
 
 use super::{actions::Actions, input::Bot, logic::MoveHistory};
-use k_utils::{util_action::Proposal, util_input::handle_input, util_state::StateContraint};
+use k_utils::{util_input::handle_input, util_state::StateContraint};
 
 fn select_move(board: &mut Model, search: &mut Option<AlphaBetaSearch<Move>>) -> Option<Move> {
     let depth = 6;
@@ -53,7 +53,7 @@ fn propose_moves(
     mut commands: Commands,
     move_history: Res<MoveHistory>,
     mut bots: Query<&mut Bot>,
-    mut action_ewr: EventWriter<Proposal<Actions>>,
+    mut action_ewr: EventWriter<Actions>,
 ) {
     let mut board = Model::from(move_history.0.iter());
     if bots.iter().all(|b| board.active_player.ne(&b.0)) {
@@ -69,10 +69,7 @@ fn propose_moves(
     match select_move(&mut board, &mut bot.1) {
         Some(m) => {
             println!("Move: {:?}", m);
-            action_ewr.send(Proposal {
-                priority: 0,
-                action: Actions::Move(m),
-            });
+            action_ewr.send(Actions::Move(m));
         }
         None => {}
     }

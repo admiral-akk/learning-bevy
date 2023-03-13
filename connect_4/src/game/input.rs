@@ -6,8 +6,7 @@ use connect_4_model::{types::Player, Model, Move};
 
 use iyes_loopless::prelude::IntoConditionalSystem;
 use k_utils::{
-    raycast::components::GameInteraction, util_action::Proposal, util_input::handle_input,
-    util_state::StateContraint,
+    raycast::components::GameInteraction, util_input::handle_input, util_state::StateContraint,
 };
 
 use super::{actions::Actions, logic::MoveHistory};
@@ -22,7 +21,7 @@ fn propose_move(
     interactions: Query<(&Column, &GameInteraction), Changed<GameInteraction>>,
     move_history: Res<MoveHistory>,
     humans: Query<&Human>,
-    mut action_ewr: EventWriter<Proposal<Actions>>,
+    mut action_ewr: EventWriter<Actions>,
 ) {
     let board = Model::from(move_history.0.iter());
     if humans.iter().all(|ap| board.active_player.ne(&ap.0)) {
@@ -37,10 +36,7 @@ fn propose_move(
         {
             match interaction {
                 JustReleased => {
-                    action_ewr.send(Proposal {
-                        priority: 1,
-                        action: Actions::Move(*m),
-                    });
+                    action_ewr.send(Actions::Move(*m));
                 }
                 _ => {}
             }

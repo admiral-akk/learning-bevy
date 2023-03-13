@@ -1,8 +1,6 @@
-use std::marker::PhantomData;
-
 use bevy::{
     prelude::{
-        App, AssetServer, BuildChildren, ButtonBundle, Changed, Color, Commands, Component, Entity,
+        AssetServer, BuildChildren, ButtonBundle, Changed, Color, Commands, Component, Entity,
         EventWriter, Query, Res, TextBundle,
     },
     text::TextStyle,
@@ -10,8 +8,6 @@ use bevy::{
     ui::{AlignItems, BackgroundColor, Interaction, JustifyContent, Size, Style},
     utils::default,
 };
-
-use crate::util_action::{Act, Proposal};
 
 const NORMAL_BUTTON: Color = Color::rgb(0.15, 0.15, 0.15);
 const HOVERED_BUTTON: Color = Color::rgb(0.25, 0.25, 0.25);
@@ -77,7 +73,7 @@ pub fn update_buttons(
 
 pub fn emit_proposal<ActionType: Send + Sync>(
     buttons: Query<(&UtilButtonState, &UtilButton<ActionType>), Changed<UtilButtonState>>,
-    mut proposal: EventWriter<Proposal<ActionType>>,
+    mut proposal: EventWriter<ActionType>,
 ) {
     proposal.send_batch(
         buttons
@@ -86,18 +82,16 @@ pub fn emit_proposal<ActionType: Send + Sync>(
     );
 }
 
-// We need an internal button event to maintain the state of the button (graphics, responsiveness)
-
 #[derive(Component)]
 pub struct UtilButton<ActionType: Sync + Send + 'static> {
-    generate_action: Box<dyn Fn(&State) -> Proposal<ActionType> + Send + Sync>,
+    generate_action: Box<dyn Fn(&State) -> ActionType + Send + Sync>,
 }
 
 pub fn add_button<ActionType: Sync + Send + 'static>(
     commands: &mut Commands,
     asset_server: &AssetServer,
     config: UtilButtonConfig,
-    generate_action: Box<dyn Fn(&State) -> Proposal<ActionType> + Send + Sync>,
+    generate_action: Box<dyn Fn(&State) -> ActionType + Send + Sync>,
 ) -> Entity {
     let text = commands
         .spawn(TextBundle::from_section(

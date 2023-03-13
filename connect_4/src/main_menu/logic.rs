@@ -3,17 +3,13 @@ use std::marker::PhantomData;
 use crate::game::plugin::Game;
 use bevy::prelude::*;
 use iyes_loopless::prelude::IntoConditionalSystem;
-use k_utils::{
-    util_action::{handle_actions, Act},
-    util_plugin::UtilPlugin,
-    util_state::StateContraint,
-};
+use k_utils::{util_action::handle_actions, util_plugin::UtilPlugin, util_state::StateContraint};
 
 use super::{actions::Actions, plugin::MainMenu};
 
-fn apply_move(mut commands: Commands, mut action_ewr: EventReader<Act<Actions>>) {
+fn apply_move(mut commands: Commands, mut action_ewr: EventReader<Actions>) {
     for action in action_ewr.iter() {
-        match action.action {
+        match action {
             Actions::StartGame(s) => match s {
                 k_utils::util_button::State::JustReleased(_) => {
                     println!("Just released event!");

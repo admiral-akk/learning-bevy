@@ -4,7 +4,6 @@ use bevy::prelude::*;
 use iyes_loopless::prelude::*;
 
 use k_utils::{
-    util_action::Proposal,
     util_button::{add_button, UtilButtonConfig},
     util_graphics::update_graphics,
     util_state::{StateContraint, UtilState},
@@ -53,13 +52,7 @@ fn spawn_ui(mut commands: Commands, asset_server: Res<AssetServer>) {
             size: Size::new(Val::Px(300.0), Val::Px(65.0)),
             text: "Main Menu".to_string(),
         },
-        Box::new(|s| Proposal {
-            priority: match s {
-                k_utils::util_button::State::JustReleased(_) => -100,
-                _ => 100,
-            },
-            action: Actions::EndGame(*s),
-        }),
+        Box::new(|s| Actions::EndGame(*s)),
     );
 
     commands.entity(root).add_child(button);

@@ -1,8 +1,7 @@
-use crate::util_action::{Act, Proposal};
+use crate::util_action::Action;
 use crate::util_button::{emit_proposal, update_buttons};
 
 use super::raycast::plugin::RaycastPlugin;
-use super::util_action::select_move;
 use super::util_stages::*;
 use super::util_state::{StateContraint, UtilState};
 use super::util_systems::clean;
@@ -65,15 +64,10 @@ impl Plugin for UtilPluginStruct {
     }
 }
 
-pub trait UtilPlugin<
-    StateType: StateContraint + Component,
-    ActionType: Sync + Send + 'static + Clone,
->
-{
+pub trait UtilPlugin<StateType: StateContraint + Component, ActionType: Action + Clone> {
     fn add_defaults(app: &mut App) {
         app.add_loopless_state_after_stage(UPDATE_STATE, UtilState::<StateType>::Uninitialized);
-        app.add_event::<Proposal<ActionType>>();
-        app.add_event::<Act<ActionType>>();
+        app.add_event::<ActionType>();
         app.add_system_set_to_stage(
             PRE_INPUT,
             ConditionSet::new()
@@ -97,11 +91,12 @@ pub trait UtilPlugin<
                 })
                 .into(),
         );
+
         app.add_system_set_to_stage(
             SELECT_MOVE,
             ConditionSet::new()
                 .run_in_state(UtilState::<StateType>::Running)
-                .with_system(select_move::<ActionType>)
+                .with_system(ActionType::apply_move())
                 .into(),
         );
         app.add_system_set_to_stage(

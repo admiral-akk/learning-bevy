@@ -4,6 +4,7 @@ use iyes_loopless::prelude::*;
 use crate::main_menu::plugin::MainMenu;
 
 use k_utils::{
+    util_action::Action,
     util_plugin::UtilPlugin,
     util_state::{StateContraint, UtilState},
 };
@@ -34,6 +35,8 @@ impl Core {
 
 #[derive(Clone, Copy)]
 struct Dummy;
+
+impl Action for Dummy {}
 
 impl UtilPlugin<Core, Dummy> for Core {}
 impl StateContraint for Core {}

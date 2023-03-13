@@ -1,36 +1,20 @@
-use bevy::prelude::{App, EventReader, EventWriter, Plugin};
-use iyes_loopless::{condition::ConditionalSystemDescriptor, prelude::ConditionSet};
+use bevy::prelude::{App, Entity, EventReader, EventWriter, Query, World};
+use iyes_loopless::{
+    condition::ConditionalSystemDescriptor,
+    prelude::{ConditionSet, IntoConditionalSystem},
+};
 
 use super::{
-    util_stages::{APPLY_MOVE, SIMULATE_MOVES},
+    util_stages::APPLY_MOVE,
     util_state::{StateContraint, UtilState},
 };
 
-pub struct Proposal<ActionType: 'static + Sync + Send> {
-    pub priority: i32,
-    pub action: ActionType,
-}
-
-pub struct Act<ActionType: 'static + Sync + Send> {
-    pub action: ActionType,
-}
-
-pub fn select_move<ActionType: 'static + Sync + Send + Clone>(
-    mut proposals: EventReader<Proposal<ActionType>>,
-    mut action: EventWriter<Act<ActionType>>,
-) {
-    let mut best = None;
-    for proposal in proposals.iter() {
-        if best.is_none() {
-            best = Some(proposal);
-        } else if best.unwrap().priority > proposal.priority {
-            best = Some(proposal);
-        }
-    }
-    if let Some(proposal) = best {
-        action.send(Act {
-            action: proposal.action.clone(),
-        })
+pub trait Action
+where
+    Self: Sized + Sync + Send + 'static,
+{
+    fn apply_move() -> ConditionalSystemDescriptor {
+        (|| {}).into_conditional()
     }
 }
 
