@@ -50,7 +50,7 @@ fn select_move(board: &mut Model, search: &mut Option<AlphaBetaSearch<Move>>) ->
 }
 
 fn propose_moves(
-    mut commands: Commands,
+    _commands: Commands,
     move_history: Res<MoveHistory>,
     mut bots: Query<&mut Bot>,
     mut action_ewr: EventWriter<Actions>,
