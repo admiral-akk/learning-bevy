@@ -1,5 +1,5 @@
 use crate::line_tracker::LineTracker;
-use crate::types::{Dimensions, Owner, Player};
+use crate::types::{Dimensions, Player};
 use crate::Move;
 use std::fmt::Debug;
 

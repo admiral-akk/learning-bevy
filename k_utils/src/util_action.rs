@@ -1,4 +1,4 @@
-use bevy::prelude::{App, Entity, EventReader, EventWriter, Query, World};
+use bevy::prelude::{App};
 use iyes_loopless::{
     condition::ConditionalSystemDescriptor,
     prelude::{ConditionSet, IntoConditionalSystem},
