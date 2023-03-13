@@ -30,7 +30,6 @@ fn update_ui(
     }
 }
 
-pub struct ExitGame;
 fn spawn_ui(mut commands: Commands, asset_server: Res<AssetServer>) {
     let commands = &mut commands;
     let root = commands
