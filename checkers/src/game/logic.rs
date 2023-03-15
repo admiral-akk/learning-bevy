@@ -39,6 +39,16 @@ impl Default for Dimensions {
 #[derive(Component)]
 pub struct Square;
 
+#[derive(Component)]
+pub struct Piece {
+    pub owner: Owner,
+}
+
+pub enum Owner {
+    White,
+    Black,
+}
+
 pub fn setup_board(mut commands: Commands, dimensions: Res<Dimensions>) {
     for column in 0..dimensions.height {
         for row in 0..dimensions.width {
@@ -47,6 +57,22 @@ pub fn setup_board(mut commands: Commands, dimensions: Res<Dimensions>) {
                 .insert(Square)
                 .insert(GameInteraction::new());
         }
+    }
+    for row in 0..dimensions.width {
+        commands
+            .spawn(Position::new(row, row % 2))
+            .insert(Piece {
+                owner: Owner::White,
+            })
+            .insert(GameInteraction::new());
+    }
+    for row in 0..dimensions.width {
+        commands
+            .spawn(Position::new(row, 7 - (row + 1) % 2))
+            .insert(Piece {
+                owner: Owner::Black,
+            })
+            .insert(GameInteraction::new());
     }
 }
 
