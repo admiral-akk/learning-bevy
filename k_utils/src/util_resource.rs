@@ -1,7 +1,5 @@
 use bevy::prelude::{App, Commands, FromWorld, Resource};
-use iyes_loopless::{
-    prelude::{AppLooplessStateExt, ConditionSet},
-};
+use iyes_loopless::prelude::{AppLooplessStateExt, ConditionSet};
 
 use super::util_state::{StateContraint, UtilState};
 

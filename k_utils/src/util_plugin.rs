@@ -5,7 +5,11 @@ use super::raycast::plugin::RaycastPlugin;
 use super::util_stages::*;
 use super::util_state::{StateContraint, UtilState};
 use super::util_systems::clean;
-use bevy::prelude::{App, Commands, Component, Entity, Plugin, Query, Without};
+use bevy::prelude::{
+    App, Camera2dBundle, Commands, Component, Entity, Plugin, Query, ResMut, Without,
+};
+use bevy::window::Windows;
+use bevy::DefaultPlugins;
 use iyes_loopless::prelude::ConditionSet;
 use iyes_loopless::{prelude::AppLooplessStateExt, state::NextState};
 
@@ -60,13 +64,33 @@ impl Plugin for UtilPluginStruct {
                 .label("UPDATE_BUTTONS")
                 .with_system(update_buttons)
                 .into(),
-        );
+        )
+        .add_startup_system(setup_camera)
+        .add_plugins(DefaultPlugins);
     }
 }
 
+fn setup_camera(mut commands: Commands, mut windows: ResMut<Windows>) {
+    commands.spawn(Camera2dBundle::default()).insert(Owned);
+    let window = windows.primary_mut();
+    window.set_resolution(900., 900.);
+    window.set_resizable(false);
+}
+
 pub trait UtilPlugin<StateType: StateContraint + Component, ActionType: Action + Clone> {
+    fn active() -> bool {
+        false
+    }
+
     fn add_defaults(app: &mut App) {
-        app.add_loopless_state_after_stage(UPDATE_STATE, UtilState::<StateType>::Uninitialized);
+        app.add_loopless_state_after_stage(
+            UPDATE_STATE,
+            if Self::active() {
+                UtilState::<StateType>::Enter
+            } else {
+                UtilState::<StateType>::Uninitialized
+            },
+        );
         app.add_event::<ActionType>();
         app.add_system_set_to_stage(
             PRE_INPUT,

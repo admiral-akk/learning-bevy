@@ -1,4 +1,4 @@
-use bevy::prelude::{App};
+use bevy::prelude::App;
 use iyes_loopless::{
     condition::ConditionalSystemDescriptor,
     prelude::{ConditionSet, IntoConditionalSystem},

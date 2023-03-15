@@ -1,7 +1,7 @@
 use std::ops::Deref;
 
 use alpha_beta::GameModel;
-use bevy::prelude::{App, Changed, Component, Plugin, Res, With};
+use bevy::prelude::{App, AssetServer, Changed, Component, Plugin, Res, With};
 use connect_4_model::{
     types::{Owner, Player},
     Model, Move,
@@ -24,22 +24,23 @@ use bevy::{
     sprite::{Sprite, SpriteBundle},
 };
 
-const SQUARE_SIZE: f32 = 80.;
-const SPACING: f32 = SQUARE_SIZE + 10.;
+const SQUARE_SIZE: f32 = 100.;
+const SPACING: f32 = SQUARE_SIZE + 0.;
 
 fn on_add(
     mut commands: Commands,
     move_history: Res<MoveHistory>,
     new_squares: Query<(Entity, &PositionW), Added<PositionW>>,
+    asset_server: Res<AssetServer>,
 ) {
     let board = Model::from(move_history.0.iter());
     for (entity, position) in new_squares.iter() {
         commands.entity(entity).insert(SpriteBundle {
             sprite: Sprite {
-                color: Color::WHITE,
                 custom_size: Some(Vec2::new(SQUARE_SIZE, SQUARE_SIZE)),
                 ..Default::default()
             },
+            texture: asset_server.load("images/board-square.png"),
             transform: Transform {
                 translation: Vec3::new(
                     (position.x as f32 - (board.dimensions.0 - 1) as f32 / 2.) * SPACING,
@@ -132,10 +133,7 @@ fn update_proposed_color(
 
 fn update_color(mut board: Query<(&mut Sprite, &OwnerW), Changed<OwnerW>>) {
     for (mut sprite, &owner) in board.iter_mut() {
-        sprite.color = match *owner {
-            Owner::None => Color::WHITE,
-            Owner::Owned(player) => player.to_color(),
-        }
+        sprite.color = owner.to_color();
     }
 }
 

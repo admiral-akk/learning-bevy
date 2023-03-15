@@ -51,7 +51,6 @@ impl<StateType: StateContraint> Plugin for Input<StateType> {
 }
 
 // Input
-
 #[derive(Component, PartialEq, Clone, Copy, Debug)]
 pub struct Human(pub Player);
 
