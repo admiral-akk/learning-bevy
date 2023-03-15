@@ -1,12 +1,12 @@
-use std::ops::{Add, Deref};
 
-use bevy::prelude::{App, AssetServer, Changed, Component, Plugin, Res, With};
+
+use bevy::prelude::{App, AssetServer, Plugin, Res};
 use iyes_loopless::prelude::{ConditionSet, IntoConditionalSystem};
 
 use k_utils::{util_stages::UPDATE_DELETED, util_state::UtilState};
 
 use bevy::{
-    prelude::{Added, Color, Commands, Entity, Query, Transform, Vec2, Vec3},
+    prelude::{Added, Commands, Entity, Query, Transform, Vec2, Vec3},
     sprite::{Sprite, SpriteBundle},
 };
 

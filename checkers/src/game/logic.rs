@@ -50,7 +50,7 @@ pub fn setup_board(mut commands: Commands, dimensions: Res<Dimensions>) {
     }
 }
 
-fn detect_hover(square: Query<(&Position, &GameInteraction), (Changed<GameInteraction>)>) {
+fn detect_hover(square: Query<(&Position, &GameInteraction), Changed<GameInteraction>>) {
     for s in square.iter() {
         println!("{:?}", s);
     }

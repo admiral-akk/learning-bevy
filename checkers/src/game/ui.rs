@@ -1,4 +1,4 @@
-use std::marker::PhantomData;
+
 
 use bevy::prelude::*;
 use iyes_loopless::prelude::*;
@@ -6,7 +6,7 @@ use iyes_loopless::prelude::*;
 use k_utils::{
     util_button::{add_button, UtilButtonConfig},
     util_graphics::update_graphics,
-    util_state::{StateContraint, UtilState},
+    util_state::{UtilState},
 };
 
 use super::{actions::Actions, plugin::Game};
